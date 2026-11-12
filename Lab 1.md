@@ -42,6 +42,12 @@ Branch(branchName) ON DELETE CASCADE,
 loanNumber INTEGER PRIMARY KEY,
 amount DECIMAL(10,2) DEFAULT 0.00
 ```
-
+Checking the tables have been made correct by displaying the information
+```SQL
+DESC Branch
+DESC Customer
+DESC Deposit
+DESC Loan
+```
  
 
