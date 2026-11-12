@@ -1,140 +1,156 @@
-**Relation Tables**
+# Relational Tables
 
-attribute = columns
+- **Attributes** = Columns
+- **Tuples** = Rows
+- Each cell contains a single data value.
 
-Tuples = rows
+---
 
-All cells contain single data values
+# Data Types
 
+| Data Type | Description | Example |
+|------------|-------------|---------|
+| `CHAR(6)` | Fixed-length character string | `"London"` |
+| `VARCHAR(6)` | Variable-length character string (more memory efficient) | `"London"` |
+| `INT` / `INTEGER` | Whole numbers | `12` |
+| `DECIMAL(5,3)` / `NUMERIC(5,3)` | Fixed precision decimal values | `12.345` |
+| `FLOAT`, `REAL` | Decimal values without fixed precision | `12.34567` |
+| `DATE` | Stores dates and times | `20-NOV-2025` |
 
+---
 
-**Data Types:** 
+# Creating Tables
 
-Character(6) or char(6) is for words.
+```sql
+CREATE TABLE Tutor (
+    name VARCHAR(20) PRIMARY KEY,
+    roomNo INT
+);
+```
 
-VARCHAR(6) is more memory efficient
+## Primary Key
 
-Integer or Int e.g 12
+A **primary key** is a column, or set of columns, whose values uniquely identify each row in a table.
 
-Decimal(5,3) or numeric (5,3) stores values such as 12.345
+---
 
-FLOAT, REAL stores decimal but doesn't have set precision
+# Dropping Tables
 
-DATE stores Dates and times
+The `DROP TABLE` command removes a table from the database.
 
+```sql
+DROP TABLE Tutor;
+```
 
+---
 
-**Creating Tables**
+# Constraints
 
+A **constraint** is a rule that restricts the values that can be stored in a database.
 
+Example:
 
-CREATE TABLE Tutor ( 
+```sql
+name CHAR(20) CONSTRAINT stName REFERENCES Tutor(name)
+```
 
-&#x09;name VARCHAR(20) PRIMARY KEY,
+---
 
-&#x09;roomNo INT);
+# Composite Primary Keys
 
+A **composite primary key** consists of two or more columns that together uniquely identify a row.
 
+```sql
+CREATE TABLE Lecture (
+    name CHAR(20),
+    roomNo INT,
+    occurs DATE,
+    lecturer VARCHAR(20),
+    PRIMARY KEY (occurs, roomNo)
+);
+```
 
-**Primary Key** is a set of columns that together makes each row have distinct set of column values 
+---
 
+# UNIQUE, NOT NULL, CHECK and DEFAULT Constraints
 
+The `gender` column can only contain `M`, `F`, or `U`. If no value is provided, it defaults to `U`.
 
-**DROP TABLE:** this command allows the removal of the database components
+```sql
+CREATE TABLE Person (
+    name VARCHAR(10),
+    gender CHAR(1) DEFAULT 'U'
+        CHECK (gender IN ('M', 'F', 'U'))
+);
+```
 
+Example insertion:
 
+```sql
+INSERT INTO Person (name)
+VALUES ('Smith');
+```
 
-**Constraints** - a rule that restricts the values in databases.
+Result:
 
+- `name` = `'Smith'`
+- `gender` = `'U'` (default value)
 
+---
 
-name CHAR(20) CONSTRAINT stName RERFENCES tutor,
+# Foreign Keys
 
+A **foreign key** is a constraint that ensures values in one table match values in another table.
 
+If table **B** references table **A**, the referenced row in **A** must already exist (unless the foreign key value is `NULL`).
 
-**Composite Primary Keys** are where two columns are the primary key
+When a referenced row is updated or deleted, the foreign key constraint can:
 
+- Prevent the change
+- Set the foreign key to `NULL`
+- Set the foreign key to a default value
+- Cascade the change to dependent rows
 
+Example:
 
-CREATE TABLE lecture (
-
-&#x09;name CHAR(20),
-
-&#x09;roomNo INT,
-
-&#x09;occurs DATE,
-
-&#x09;lecturer VARCHAR(20),
-
-&#x09;PRIMARY KEY (occurs, roomNo)
-
-&#x09;);
-
-
-
-**Unique, Not Null, check, default, Constraints**
-
-The gender column can only have the values M or F or U and U as a default value.
-
-example:
-
-
-
-CREATE TABLE PERSON(
-
-&#x09;name VARCHAR(10),
-
-&#x09;gender CHAR(1) DEFAULT 'U'
-
-&#x09;	CHECK(gender IN ('M','F','U')
-
-
-
-If you insert a new row, the name will be NULL, and it will default to U if it is null.
-
-INSERT INTO Person (name) VALUES ('Smith')
-
-
-
-**Foreign Keys** this is an inter relational constraint in which row values are set of table columns in one table B can only occyr if they match the row values in a set of columns in another value or these values are NULL.
-
-
-
-if b reference A, A must exist
-
-
-
-if a row with a foreign key is updated or deleted the referential constraint can stop the change.
-
-
-
-it can be set null, set default
-
+```sql
 CONSTRAINT stLec
+    FOREIGN KEY (lectureNo, occurs)
+    REFERENCES Lecture(lectureNo, occurs)
+    ON DELETE SET NULL
+```
 
-&#x09;FOREIGN KEY (LectureNO, occurs)
+---
 
-&#x09;REFERENCES Lecture(lectureNo, occurs)
+# Altering Foreign Keys
 
-&#x09;ON DELETE SET NULL
+Removing an existing primary key:
 
+```sql
+ALTER TABLE Student
+DROP PRIMARY KEY;
+```
 
+Adding a foreign key constraint:
 
-**Altering a Foreign Key**
+```sql
+ALTER TABLE Student
+ADD CONSTRAINT stLec
+    FOREIGN KEY (roomNo, occurs)
+    REFERENCES Lectures(roomNo, occurs)
+    ON DELETE CASCADE;
+```
 
-ALTER TABLE student DROP PRIMARY KEY;
+`ON DELETE CASCADE` automatically removes dependent rows when the referenced row is deleted.
 
-ALTER TABLE student ADD CONSTRAINT
+---
 
-stLec FOREIGN KEY (roomNo,occurs)
+# Displaying Table Information
 
-REFERENCES Lectures(roomNo, occurs) ON DELETE CASCADE
+```sql
+DESC Customer;
+```
 
-
-
-**Displaying table info**
-
-Desc table customer
-
+Displays the structure of the `Customer` table, including column names, data types, and constraints.
 
 
